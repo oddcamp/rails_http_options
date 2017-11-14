@@ -40,8 +40,8 @@ Then in any of your resource-based controller, add your options response:
   options do
     {
       schemas: {
-        accepts: Company.introspection,
-        returns: Company.introspection
+        accepts: Company.json_schema,
+        returns: Company.json_schema
       },
       meta: { max_per_page: 100 }
     }
@@ -59,14 +59,14 @@ Specifically, you get 3 params in the block:
     if route_details[:id] #member route
       {
         schemas: {
-          accepts: Company.introspection,
-          returns: Company.introspection
+          accepts: Company.find(params[:id]).introspection_schema,
+          returns: Company.find(params[:id]).introspection_schema,
         }
       }
     else #collection route
       {
         schemas: {
-          returns: [Company.introspection]
+          returns: [Company.introspection_schema]
         },
         meta: { max_per_page: 100 }
       }
