@@ -1,8 +1,8 @@
 # RailsHttpOptions
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rails_http_options`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Simple gem that allows you to handle HTTP OPTIONS in Rails.
+Ideal for API introspection, like fetching request/response schemas and other
+meaningful information.
 
 ## Installation
 
@@ -21,8 +21,60 @@ Or install it yourself as:
     $ gem install rails_http_options
 
 ## Usage
+Include `RailsHttpOptions` in your application controller.
+Then add a Rails route in your routes.rb denoting that you want to handle all
+HTTP OPTIONS in `option` method, defined by this gem.
 
-TODO: Write usage instructions here
+```ruby
+  match '*path', {
+    controller: 'application',
+    action: 'options',
+    constraints: { method: 'OPTIONS' },
+    via: [:options]
+  }
+```
+
+Then in any of your resource-based controller, add your options response:
+
+```ruby
+  options do
+    {
+      schemas: {
+        accepts: Company.introspection,
+        returns: Company.introspection
+      },
+      meta: { max_per_page: 100 }
+    }
+  end
+```
+
+You can also respond differently depending on request information.
+Specifically, you get 3 params in the block:
+* route details, coming from Rails routing mechanism and it's a simple hash
+* (rails) request object (`ActionDispatch::Request`)
+* params object (`ActionController::Parameters`)
+
+```ruby
+  options do |route_details, request, params|
+    if route_details[:id] #member route
+      {
+        schemas: {
+          accepts: Company.introspection,
+          returns: Company.introspection
+        }
+      }
+    else #collection route
+      {
+        schemas: {
+          returns: [Company.introspection]
+        },
+        meta: { max_per_page: 100 }
+      }
+  end
+```
+
+The response is always in JSON, but if you need something else (like yaml or XML),
+you can always override the default [`options`]() method.
 
 ## Development
 

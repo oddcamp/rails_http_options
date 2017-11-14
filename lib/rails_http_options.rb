@@ -18,17 +18,13 @@ module RailsHttpOptions
 
     return render({
       json: instance_exec(
+        route_details_for(request.url),
         request,
         params,
-        &_controller_for(url: request.url).options
+        &controller_for(url: request.url).options
       )
     })
   end
-
-  protected
-    def action
-      route_details_for(request.url)[:action]
-    end
 
   private
     def controller_for(url:)
