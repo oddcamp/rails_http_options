@@ -51,17 +51,24 @@ Then in any of your resource-based controller, add your options response:
 ```
 
 You can also respond differently depending on request information.
-Specifically, you get 3 params in the block:
-* route details, coming from Rails routing mechanism and it's a simple hash
-* (rails) request object (`ActionDispatch::Request`)
-* params object (`ActionController::Parameters`)
+
+Specifically, you get route details param
+coming from Rails routing mechanism and it's a simple hash.
+However, you have access to the regular request/response context inside the block,
+because just before is being called its context is changed to a controller's method,
+defined by this gem. Hence, you can access
+[request](http://api.rubyonrails.org/classes/ActionDispatch/Request.html),
+[response](http://api.rubyonrails.org/v5.0.1/classes/ActionDispatch/Response.html),
+[params](http://api.rubyonrails.org/classes/ActionController/Parameters.html) etc,
+like a regular controller method.
+
 
 ```ruby
   class Api::V1::UsersController < ApplicationController
-    options do |route_details, request, params|
+    options do |route_details|
       if route_details[:id] #member route
         {
-          schemas: {
+          schemas: { #params is available through context switching
             accepts: Company.find(params[:id]).introspection_schema,
             returns: Company.find(params[:id]).introspection_schema,
           }
