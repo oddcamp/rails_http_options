@@ -19,8 +19,6 @@ module RailsHttpOptions
     return render({
       json: instance_exec(
         route_details_for(request.url),
-        request,
-        params,
         &controller_for(url: request.url).options
       )
     })
@@ -29,8 +27,9 @@ module RailsHttpOptions
   private
     def controller_for(url:)
       route_details = route_details_for(url)
+      name = route_details[:controller].titleize.gsub('/', '::').gsub(' ','')
 
-      return "#{route_details[:controller].titleize.gsub('/', '::').gsub(' ','')}Controller".constantize
+      return "#{name}Controller".constantize
     end
 
     def route_details_for(url)
