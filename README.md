@@ -2,7 +2,7 @@
 
 Simple gem that allows you to handle HTTP OPTIONS in Rails.
 Ideal for API introspection, like fetching request/response schemas and other
-meaningful information.
+meaningful for the client information.
 
 ## Installation
 
