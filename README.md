@@ -37,14 +37,16 @@ HTTP OPTIONS in `option` method, defined by this gem.
 Then in any of your resource-based controller, add your options response:
 
 ```ruby
-  options do
-    {
-      schemas: {
-        accepts: Company.json_schema,
-        returns: Company.json_schema
-      },
-      meta: { max_per_page: 100 }
-    }
+  class Api::V1::UsersController < ApplicationController
+    options do
+      {
+        schemas: {
+          accepts: Company.json_schema,
+          returns: Company.json_schema
+        },
+        meta: { max_per_page: 100 }
+      }
+    end
   end
 ```
 
@@ -55,21 +57,24 @@ Specifically, you get 3 params in the block:
 * params object (`ActionController::Parameters`)
 
 ```ruby
-  options do |route_details, request, params|
-    if route_details[:id] #member route
-      {
-        schemas: {
-          accepts: Company.find(params[:id]).introspection_schema,
-          returns: Company.find(params[:id]).introspection_schema,
+  class Api::V1::UsersController < ApplicationController
+    options do |route_details, request, params|
+      if route_details[:id] #member route
+        {
+          schemas: {
+            accepts: Company.find(params[:id]).introspection_schema,
+            returns: Company.find(params[:id]).introspection_schema,
+          }
         }
-      }
-    else #collection route
-      {
-        schemas: {
-          returns: [Company.introspection_schema]
-        },
-        meta: { max_per_page: 100 }
-      }
+      else #collection route
+        {
+          schemas: {
+            returns: [Company.introspection_schema]
+          },
+          meta: { max_per_page: 100 }
+        }
+      end
+    end
   end
 ```
 
