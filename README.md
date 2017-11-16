@@ -86,7 +86,8 @@ like a regular controller method.
 ```
 
 The response is always in JSON, but if you need something else (like yaml or XML),
-you can always override the default [`options`]() method.
+you can always override the default
+[`options`](https://github.com/kollegorna/rails_http_options/blob/master/lib/rails_http_options.rb#L16-L25) method.
 
 ## Development
 
